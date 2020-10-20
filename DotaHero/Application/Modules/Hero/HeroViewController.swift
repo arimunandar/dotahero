@@ -71,23 +71,7 @@ class HeroViewController: UIViewController {
     
     @IBOutlet weak var similarHeroes: UIStackView! {
         didSet {
-            if let attribute = hero.primaryAttr, let heroes = HeroAttribute(rawValue: attribute)?.heros {
-                heroes.forEach { (hero) in
-                    if let urlString = hero.img {
-                        let heroImage = UIImageView()
-                        heroImage.contentMode = .scaleAspectFill
-                        heroImage.layer.cornerRadius = 10
-                        heroImage.sd_setImage(with: URL(string: "https://api.opendota.com" + urlString))
-                        heroImage.clipsToBounds = true
-                        heroImage.translatesAutoresizingMaskIntoConstraints = false
-                        
-                        NSLayoutConstraint.activate([
-                            heroImage.heightAnchor.constraint(equalToConstant: 80)
-                        ])
-                        similarHeroes.addArrangedSubview(heroImage)
-                    }
-                }
-            }
+            setupSimilarHeroes()
         }
     }
     
@@ -156,6 +140,26 @@ class HeroViewController: UIViewController {
 	override func viewDidLoad() {
         super.viewDidLoad()
         title = hero.localizedName
+    }
+    
+    func setupSimilarHeroes() {
+        if let attribute = hero.primaryAttr, let heroes = HeroAttribute(rawValue: attribute)?.heros {
+            heroes.forEach { (hero) in
+                if let urlString = hero.img {
+                    let heroImage = UIImageView()
+                    heroImage.contentMode = .scaleAspectFill
+                    heroImage.layer.cornerRadius = 10
+                    heroImage.sd_setImage(with: URL(string: "https://api.opendota.com" + urlString))
+                    heroImage.clipsToBounds = true
+                    heroImage.translatesAutoresizingMaskIntoConstraints = false
+                    
+                    NSLayoutConstraint.activate([
+                        heroImage.heightAnchor.constraint(equalToConstant: 80)
+                    ])
+                    similarHeroes.addArrangedSubview(heroImage)
+                }
+            }
+        }
     }
 }
 

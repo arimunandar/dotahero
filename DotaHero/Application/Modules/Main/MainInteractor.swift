@@ -15,7 +15,7 @@ protocol IMainInteractor: class {
     var roles: [String] { get }
     var heroes: [Hero] { get }
     func processFilterHeroes(by role: String) -> [Hero]
-    func processFetchHeroes()
+    func processFetchHeroes(completion: ((_ heroes: [Hero]?) -> Void)?)
 }
 
 class MainInteractor: IMainInteractor {
@@ -51,7 +51,7 @@ class MainInteractor: IMainInteractor {
         return _heroes.sorted(by: { ($0.localizedName ?? "") < ($1.localizedName ?? "") })
     }
 
-    func processFetchHeroes() {
+    func processFetchHeroes(completion: ((_ heroes: [Hero]?) -> Void)?) {
         if heroes.isEmpty {
             DispatchQueue.global(qos: .background).async {
                 AF.request("https://api.opendota.com/api/herostats").responseData { [weak self] response in
@@ -59,28 +59,32 @@ class MainInteractor: IMainInteractor {
                     case .success(let data):
                         do {
                             if let json = try JSONSerialization.jsonObject(with: data) as? [[String: Any]] {
+                                var heros: [Hero] = []
                                 let group = DispatchGroup()
                                 json.forEach { hero in
                                     group.enter()
                                     let hero = Hero(dictionary: hero)
                                     hero.saveToRealm()
+                                    heros.append(hero)
                                     group.leave()
                                 }
                                 
                                 group.notify(queue: .main) {
                                     self?.presenter.presentSuccessGetHeroes()
+                                    completion?(heros)
                                 }
                             }
                         } catch {
-                            print(error)
+                            completion?(nil)
                         }
-                    case .failure(let error):
-                        print(error.localizedDescription)
+                    case .failure:
+                        completion?(nil)
                     }
                 }
             }
         } else {
             self.presenter.presentSuccessGetHeroes()
+            completion?(nil)
         }
     }
 }

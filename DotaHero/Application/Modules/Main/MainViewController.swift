@@ -86,7 +86,7 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         setupHomeView()
         setupOverlayView()
-        interactor.processFetchHeroes()
+        interactor.processFetchHeroes(completion: nil)
     }
     
     @IBAction func handleShowRole(_ sender: UIButton) {
