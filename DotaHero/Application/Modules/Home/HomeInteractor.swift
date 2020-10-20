@@ -12,8 +12,7 @@
 import UIKit
 
 protocol IHomeInteractor: class {
-    func handleFetchHeros()
-    func handleFilterHerosBy(role: String)
+    // do someting...
 }
 
 class HomeInteractor: IHomeInteractor {
@@ -23,48 +22,9 @@ class HomeInteractor: IHomeInteractor {
         return HomeWorker()
     }
 
-    private var heros: [Hero] = []
+    private var heroes: [Hero] = []
 
     init(presenter: IHomePresenter) {
         self.presenter = presenter
-    }
-
-    func handleFetchHeros() {
-        manager.fetchFromLocal { [weak self] heros in
-            if heros.isEmpty {
-                self?.manager.fetchHeros { result in
-                    switch result {
-                    case .success(let heros):
-                        heros.forEach { $0.saveToRealm() }
-                        self?.presenter.presentSuccessGetHeros(heros: heros)
-                    case .failure(let error):
-                        print(error)
-                    }
-                }
-            } else {
-                let _heros = heros.sorted {
-                    var isSorted = false
-                    if let first = $0.localizedName, let second = $1.localizedName {
-                        isSorted = first < second
-                    }
-                    return isSorted
-                }
-                self?.presenter.presentSuccessGetHeros(heros: _heros)
-            }
-        }
-    }
-
-    func handleFilterHerosBy(role: String) {
-        manager.fetchFromLocal { [weak self] heros in
-            let allHeros = heros.sorted {
-                var isSorted = false
-                if let first = $0.localizedName, let second = $1.localizedName {
-                    isSorted = first < second
-                }
-                return isSorted
-            }
-            let herosFiltered = allHeros.filter({ $0.roles.contains(where: { $0.lowercased() == role.lowercased() }) })
-            self?.presenter.presentSuccessGetHeros(heros: role.lowercased() == "all" ? allHeros : herosFiltered)
-        }
     }
 }

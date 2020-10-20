@@ -14,35 +14,9 @@ import Foundation
 import RealmSwift
 
 protocol IHomeWorker {
-    func fetchHeros(completion: ((Swift.Result<[Hero], Error>) -> Void)?)
-    func fetchFromLocal(completion: (([Hero]) -> Void)?)
+    // do someting...
 }
 
 class HomeWorker: IHomeWorker {
-    func fetchHeros(completion: ((Result<[Hero], Error>) -> Void)?) {
-        AF.request("https://api.opendota.com/api/herostats").responseData { response in
-            switch response.result {
-            case .success(let data):
-                do {
-                    if let json = try JSONSerialization.jsonObject(with: data) as? [[String: Any]] {
-                        completion?(.success(json.map { Hero(dictionary: $0) }))
-                    }
-                } catch {
-                    print(error)
-                }
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
-    }
-    
-    func fetchFromLocal(completion: (([Hero]) -> Void)?) {
-        guard let results = RealmService.share.get(object: Hero.self) else {
-            completion?([])
-            return
-        }
-        var heros: [Hero] = []
-        results.forEach({ heros.append($0) })
-        completion?(heros)
-    }
+    // do someting...
 }

@@ -11,7 +11,7 @@
 import UIKit
 
 protocol IMainPresenter: class {
-    func presentSuccessGetRoles(roles: [String])
+    func presentSuccessGetHeroes()
 }
 
 class MainPresenter: IMainPresenter {	
@@ -21,7 +21,7 @@ class MainPresenter: IMainPresenter {
 		self.viewController = viewController
 	}
     
-    func presentSuccessGetRoles(roles: [String]) {
-        viewController.displaySuccessGetRoles(roles: roles)
+    func presentSuccessGetHeroes() {
+        viewController.displaySuccessGetHeroes()
     }
 }

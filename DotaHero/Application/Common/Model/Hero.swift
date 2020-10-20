@@ -25,7 +25,10 @@ class Hero: Object {
     @objc dynamic var baseAgi: Int = 0
     @objc dynamic var baseInt: Int = 0
     @objc dynamic var baseMr: Int = 0
+    @objc dynamic var baseAttackMin: Int = 0
+    @objc dynamic var baseAttackMax: Int = 0
     @objc dynamic var attackType: String?
+    @objc dynamic var moveSpeed: Int = 0
 
     convenience init(dictionary: [String: Any]) {
         self.init()
@@ -95,6 +98,18 @@ class Hero: Object {
 
         if let value = dictionary["attack_type"] as? String {
             attackType = value
+        }
+        
+        if let value = dictionary["move_speed"] as? Int {
+            moveSpeed = value
+        }
+        
+        if let value = dictionary["base_attack_min"] as? Int {
+            baseAttackMin = value
+        }
+        
+        if let value = dictionary["base_attack_max"] as? Int {
+            baseAttackMax = value
         }
     }
     

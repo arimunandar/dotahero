@@ -12,13 +12,15 @@
 import UIKit
 
 protocol IHomeViewController: class {
-    func displaySuccessGetHeros(heros: [Hero])
+    // do someting...
 }
 
 class HomeViewController: UIViewController {
     var interactor: IHomeInteractor!
     var router: IHomeRouter!
-    private var heros: [Hero] = []
+    var heroes: [Hero] = []
+    var didAppear: (() -> Void)?
+    var didDisappear: (() -> Void)?
 
     @IBOutlet weak var collectionView: UICollectionView!
 
@@ -42,24 +44,31 @@ class HomeViewController: UIViewController {
         viewController.interactor = interactor
         viewController.router = router
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        didAppear?()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        didDisappear?()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupComponent()
-        interactor.handleFetchHeros()
     }
 
     private func setupComponent() {
         title = "DOTA HEROS"
         collectionView.register(UINib(nibName: "HomeItemCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "cellId")
+        collectionView.reloadData()
     }
 }
 
 extension HomeViewController: IHomeViewController {
-    func displaySuccessGetHeros(heros: [Hero]) {
-        self.heros = heros
-        collectionView.reloadData()
-    }
+    // do someting...
 }
 
 extension HomeViewController: UICollectionViewDelegateFlowLayout {
@@ -71,18 +80,18 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
 
 extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        router.navigateToHero(hero: heros[indexPath.item])
+        router.navigateToHero(hero: heroes[indexPath.item])
     }
 }
 
 extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return heros.count
+        return heroes.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath) as? HomeItemCollectionViewCell else { fatalError() }
-        cell.binding(data: heros[indexPath.item])
+        cell.binding(data: heroes[indexPath.item])
         return cell
     }
 }

@@ -32,6 +32,7 @@
 		702C48CD253BF51F00494E50 /* RealmService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 702C48CC253BF51F00494E50 /* RealmService.swift */; };
 		702C48D0253C38DA00494E50 /* Extension+Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 702C48CF253C38DA00494E50 /* Extension+Array.swift */; };
 		702C48E3253C4B0000494E50 /* Extension+UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 702C48E2253C4B0000494E50 /* Extension+UIViewController.swift */; };
+		706A0F9A253F21FA00B53261 /* DResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 706A0F99253F21FA00B53261 /* DResult.swift */; };
 		70A14ABB253DEEDC0044A0D9 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 70A14AB1253DEEDB0044A0D9 /* MainViewController.xib */; };
 		70A14ABC253DEEDC0044A0D9 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A14AB2253DEEDB0044A0D9 /* MainViewController.swift */; };
 		70A14ABD253DEEDC0044A0D9 /* MainInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A14AB3253DEEDB0044A0D9 /* MainInteractor.swift */; };
@@ -87,6 +88,7 @@
 		702C48CC253BF51F00494E50 /* RealmService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmService.swift; sourceTree = "<group>"; };
 		702C48CF253C38DA00494E50 /* Extension+Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Array.swift"; sourceTree = "<group>"; };
 		702C48E2253C4B0000494E50 /* Extension+UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+UIViewController.swift"; sourceTree = "<group>"; };
+		706A0F99253F21FA00B53261 /* DResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DResult.swift; sourceTree = "<group>"; };
 		70A14AB1253DEEDB0044A0D9 /* MainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainViewController.xib; sourceTree = "<group>"; };
 		70A14AB2253DEEDB0044A0D9 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		70A14AB3253DEEDB0044A0D9 /* MainInteractor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainInteractor.swift; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 				702C48C9253BEC6E00494E50 /* Model */,
 				702C48C6253BE87700494E50 /* ApiService */,
 				702C48BF253BE59100494E50 /* RealmService */,
+				706A0F99253F21FA00B53261 /* DResult.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -488,6 +491,7 @@
 				702C48AD253BE50B00494E50 /* HeroViewController.swift in Sources */,
 				702C48B9253BE52E00494E50 /* HomeWorker.swift in Sources */,
 				702C48C4253BE60300494E50 /* HomeItemCollectionViewCell.swift in Sources */,
+				706A0F9A253F21FA00B53261 /* DResult.swift in Sources */,
 				70A14AC3253DEEDC0044A0D9 /* MainModel.swift in Sources */,
 				70A14ABD253DEEDC0044A0D9 /* MainInteractor.swift in Sources */,
 				702C48AA253BE50B00494E50 /* HeroPresenter.swift in Sources */,

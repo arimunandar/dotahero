@@ -11,7 +11,7 @@
 import UIKit
 
 protocol IHomePresenter: class {
-    func presentSuccessGetHeros(heros: [Hero])
+    // do someting...
 }
 
 class HomePresenter: IHomePresenter {	
@@ -20,8 +20,4 @@ class HomePresenter: IHomePresenter {
 	init(viewController: IHomeViewController) {
 		self.viewController = viewController
 	}
-    
-    func presentSuccessGetHeros(heros: [Hero]) {
-        viewController.displaySuccessGetHeros(heros: heros)
-    }
 }

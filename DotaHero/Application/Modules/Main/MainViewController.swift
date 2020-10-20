@@ -9,13 +9,12 @@
 import UIKit
 
 protocol IMainViewController: class {
-    func displaySuccessGetRoles(roles: [String])
+    func displaySuccessGetHeroes()
 }
 
 class MainViewController: UIViewController {
     var interactor: IMainInteractor!
     var router: IMainRouter!
-    private var roles: [String] = []
     private let allConstant = "All"
     
     @IBOutlet weak var contentView: UIView!
@@ -37,6 +36,13 @@ class MainViewController: UIViewController {
     
     lazy var homeViewController: HomeViewController = {
         let vc = HomeViewController()
+        vc.didAppear = { [weak self] in
+            self?.filterButton.isHidden = false
+        }
+        
+        vc.didDisappear = { [weak self] in
+            self?.filterButton.isHidden = true
+        }
         return vc
     }()
     
@@ -80,8 +86,7 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         setupHomeView()
         setupOverlayView()
-        interactor.handleGetRoles()
-        collectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: false, scrollPosition: .top)
+        interactor.processFetchHeroes()
     }
     
     @IBAction func handleShowRole(_ sender: UIButton) {
@@ -143,7 +148,7 @@ extension MainViewController {
 }
 
 extension MainViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {        
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 100, height: 50)
     }
 }
@@ -152,27 +157,33 @@ extension MainViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         filterButton.isSelected.toggle()
         showHideRole(isShow: filterButton.isSelected)
-        homeViewController.interactor.handleFilterHerosBy(
-            role: indexPath.item == 0 ? allConstant :  roles[indexPath.item - 1]
+        let heroesFiltered = interactor.processFilterHeroes(
+            by: indexPath.item == 0 ? allConstant :  interactor.roles[indexPath.item - 1]
         )
+        homeViewController.heroes = heroesFiltered
+        homeViewController.collectionView.reloadData()
     }
 }
 
 extension MainViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return roles.count + 1
+        return interactor.roles.count + 1
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath) as? RoleCollectionViewCell else { fatalError() }
-        cell.binding(roleName: indexPath.item == 0 ? allConstant : roles[indexPath.item - 1])
+        cell.binding(roleName: indexPath.item == 0 ? allConstant : interactor.roles[indexPath.item - 1])
         return cell
     }
 }
 
 extension MainViewController: IMainViewController {
-    func displaySuccessGetRoles(roles: [String]) {
-        self.roles = roles
-        self.collectionView.reloadData()
+    func displaySuccessGetHeroes() {
+        collectionView.reloadData()
+        collectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: false, scrollPosition: .top)
+        homeViewController.heroes = interactor.heroes
+        DispatchQueue.main.async {
+            self.homeViewController.collectionView.reloadData()
+        }
     }
 }

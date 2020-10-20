@@ -9,10 +9,13 @@
 //              * https://github.com/arimunandar
 //              * https://www.youtube.com/channel/UC7jr8DR06tcVR0QKKl6cSNA?view_as=subscriber
 
-import UIKit
+import Alamofire
 
 protocol IMainInteractor: class {
-    func handleGetRoles()
+    var roles: [String] { get }
+    var heroes: [Hero] { get }
+    func processFilterHeroes(by role: String) -> [Hero]
+    func processFetchHeroes()
 }
 
 class MainInteractor: IMainInteractor {
@@ -22,15 +25,62 @@ class MainInteractor: IMainInteractor {
         return MainWorker()
     }
 
-    init(presenter: IMainPresenter) {
-    	self.presenter = presenter
+    var heroes: [Hero] {
+        var heroes: [Hero] = []
+        let results = RealmService.share.get(object: Hero.self)
+        results?.forEach { heroes.append($0) }
+        return heroes.sorted(by: { ($0.localizedName ?? "") < ($1.localizedName ?? "") })
     }
-    
-    func handleGetRoles() {
+
+    var roles: [String] {
         var roles: [String] = []
-        let heros = RealmService.share.get(object: Hero.self)
-        heros?.forEach { $0.roles.forEach { roles.append($0) } }
+        heroes.forEach { $0.roles.forEach { roles.append($0) } }
         roles.sort()
-        presenter.presentSuccessGetRoles(roles: roles.removingDuplicates())
+        return roles.removingDuplicates()
+    }
+
+    init(presenter: IMainPresenter) {
+        self.presenter = presenter
+    }
+
+    func processFilterHeroes(by role: String) -> [Hero] {
+        if role.lowercased() == "all" {
+            return heroes
+        }
+        let _heroes = heroes.filter { $0.roles.contains(where: { $0.lowercased() == role.lowercased() }) }
+        return _heroes.sorted(by: { ($0.localizedName ?? "") < ($1.localizedName ?? "") })
+    }
+
+    func processFetchHeroes() {
+        if heroes.isEmpty {
+            DispatchQueue.global(qos: .background).async {
+                AF.request("https://api.opendota.com/api/herostats").responseData { [weak self] response in
+                    switch response.result {
+                    case .success(let data):
+                        do {
+                            if let json = try JSONSerialization.jsonObject(with: data) as? [[String: Any]] {
+                                let group = DispatchGroup()
+                                json.forEach { hero in
+                                    group.enter()
+                                    let hero = Hero(dictionary: hero)
+                                    hero.saveToRealm()
+                                    group.leave()
+                                }
+                                
+                                group.notify(queue: .main) {
+                                    self?.presenter.presentSuccessGetHeroes()
+                                }
+                            }
+                        } catch {
+                            print(error)
+                        }
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                    }
+                }
+            }
+        } else {
+            self.presenter.presentSuccessGetHeroes()
+        }
     }
 }
